@@ -1,6 +1,6 @@
 /**
  * Missions 1 and 2. Compare two strains with dynamic programming.
- *
+ * <p>
  * Both are the same kind of table: d[i][j] answers a question about the first i letters of a and the first j letters of b.
  * Think about three things before you type: what d[i][j] means, how it follows from smaller cells, and what the first row and column are.
  */
@@ -49,7 +49,21 @@ public class Strains {
      * Example: "ACGTT" and "AGTC": the longest is "AGT", length 3.
      */
     public static int lcsLength(String a, String b) {
-        // TODO Mission 2
-        return -1;
+        int n = a.length();
+        int m = b.length();
+
+        int[][] dp = new int[n + 1][m + 1];
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (a.charAt(i - 1) == b.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return dp[n][m];
     }
 }
