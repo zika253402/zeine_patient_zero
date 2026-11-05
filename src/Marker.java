@@ -92,7 +92,6 @@ public class Marker {
 
         HashMap<Long, ArrayList<Integer>> hashes = new HashMap<>();
 
-        // Hash of the first window in B
         long hashB = 0;
         for (int i = 0; i < k; i++) {
             hashB = hashB * base + value(b.charAt(i));
@@ -101,7 +100,6 @@ public class Marker {
         hashes.putIfAbsent(hashB, new ArrayList<>());
         hashes.get(hashB).add(0);
 
-        // Rolling hash for all other windows in B
         for (int i = 1; i <= b.length() - k; i++) {
             hashB -= value(b.charAt(i - 1)) * power;
             hashB = hashB * base + value(b.charAt(i + k - 1));
@@ -112,13 +110,11 @@ public class Marker {
 
         int answer = 0;
 
-        // Hash of the first window in A
         long hashA = 0;
         for (int i = 0; i < k; i++) {
             hashA = hashA * base + value(a.charAt(i));
         }
 
-        // Check all windows in A
         for (int start = 0; start <= a.length() - k; start++) {
             if (hashes.containsKey(hashA)) {
                 ArrayList<Integer> candidates = hashes.get(hashA);
@@ -146,7 +142,6 @@ public class Marker {
                 }
             }
 
-            // Move the window one position to the right
             if (start < a.length() - k) {
                 hashA -= value(a.charAt(start)) * power;
                 hashA = hashA * base + value(a.charAt(start + k));
@@ -157,11 +152,10 @@ public class Marker {
     }
 
 
-    // Add this helper method inside the Marker class
     private static int value(char c) {
         if (c == 'A') return 1;
         if (c == 'C') return 2;
         if (c == 'G') return 3;
-        return 4; // T
+        return 4;
     }
 }
