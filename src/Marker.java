@@ -79,7 +79,89 @@ public class Marker {
      * Example: a = "ACGTAC", b = "TTACGT", k = 4: the words of a are ACGT, CGTA, GTAC; only ACGT is in b, so the answer is 1.
      */
     public static int sharedWords(String a, String b, int k) {
-        // TODO Mission 4
-        return -1;
+        if (k <= 0 || a.length() < k || b.length() < k) {
+            return 0;
+        }
+
+        long base = 5;
+        long power = 1;
+
+        for (int i = 1; i < k; i++) {
+            power *= base;
+        }
+
+        HashMap<Long, ArrayList<Integer>> hashes = new HashMap<>();
+
+        // Hash of the first window in B
+        long hashB = 0;
+        for (int i = 0; i < k; i++) {
+            hashB = hashB * base + value(b.charAt(i));
+        }
+
+        hashes.putIfAbsent(hashB, new ArrayList<>());
+        hashes.get(hashB).add(0);
+
+        // Rolling hash for all other windows in B
+        for (int i = 1; i <= b.length() - k; i++) {
+            hashB -= value(b.charAt(i - 1)) * power;
+            hashB = hashB * base + value(b.charAt(i + k - 1));
+
+            hashes.putIfAbsent(hashB, new ArrayList<>());
+            hashes.get(hashB).add(i);
+        }
+
+        int answer = 0;
+
+        // Hash of the first window in A
+        long hashA = 0;
+        for (int i = 0; i < k; i++) {
+            hashA = hashA * base + value(a.charAt(i));
+        }
+
+        // Check all windows in A
+        for (int start = 0; start <= a.length() - k; start++) {
+            if (hashes.containsKey(hashA)) {
+                ArrayList<Integer> candidates = hashes.get(hashA);
+
+                boolean found = false;
+
+                for (int position : candidates) {
+                    boolean equal = true;
+
+                    for (int j = 0; j < k; j++) {
+                        if (a.charAt(start + j) != b.charAt(position + j)) {
+                            equal = false;
+                            break;
+                        }
+                    }
+
+                    if (equal) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    answer++;
+                }
+            }
+
+            // Move the window one position to the right
+            if (start < a.length() - k) {
+                hashA -= value(a.charAt(start)) * power;
+                hashA = hashA * base + value(a.charAt(start + k));
+            }
+        }
+
+        return answer;
+    }
+
+
+    // Add this helper method inside the Marker class
+    private static int value(char c) {
+        if (c == 'A') return 1;
+        if (c == 'C') return 2;
+        if (c == 'G') return 3;
+        return 4; // T
     }
 }
