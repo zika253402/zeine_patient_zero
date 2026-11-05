@@ -1,8 +1,8 @@
 # Assignment 4. Patient Zero
 
-Student ID:
-Name:
-Group:
+Student ID: 253402
+Name: Zeine Kambarbek
+Group: SE-2510
 
 This file is the report. Fill it in as you go. How to start: `START_HERE.md`. The task: `docs/Assignment4.pdf`.
 
@@ -10,15 +10,15 @@ This file is the report. Fill it in as you go. How to start: `START_HERE.md`. Th
 
 The 9 lines your program prints on your data (`java -cp out Main`):
 
-    Mutations:
-    Shared core:
-    Marker hits:
-    First hit:
-    Border length:
-    Shared words:
-    Tests needed:
-    Cheapest testing:
-    Longest chain:
+    Mutations: 62
+    Shared core: 1169
+    Marker hits: 4
+    First hit: 4866
+    Border length: 3
+    Shared words: 626
+    Tests needed: 33
+    Cheapest testing: 123
+    Longest chain: 25
 
 My outbreak report (a screenshot of `output/outbreak.html`):
 
@@ -28,43 +28,47 @@ My outbreak report (a screenshot of `output/outbreak.html`):
 
 Answer in your own words, two or three sentences each.
 
-Mission 1. What does the cell d[i][j] of your table mean, and how is it computed from other cells?
+Mission 1
+The cell d[i][j] means the minimum number of changes needed to transform the first i characters of strain A into the first j characters of strain B. It is computed from smaller cells by choosing the best operation: insert, delete, or replace a character.
 
-Mission 2. How is the longest common subsequence different from the longest common substring? My Shared core is bigger than the number of letters that are the same at the same place: why?
+Mission 2
+The longest common subsequence does not require the characters to be next to each other, while the longest common substring must be consecutive. My Shared core can be bigger than the number of letters in the same positions because matching characters can appear in different positions as long as they stay in the same order.
 
-Mission 3. What does the prefix function tell you, and why does the pointer in the text never go back in KMP? What is the Border length of my marker and what does it mean?
+Mission 3
+The prefix function tells the length of the longest prefix that is also a suffix for each part of the marker. In KMP, the text pointer never goes back because the prefix function tells us how much of the pattern is still useful after a mismatch. My Border length is 3, which means the longest proper prefix of my marker that is also its suffix has length 3.
 
-Mission 4. Why must you compare the letters after the hashes are equal? What happens to the cost of Rabin-Karp if many windows have the same hash?
+Mission 4
+We must compare the actual letters after the hashes are equal because two different strings can sometimes have the same hash value. If many windows have the same hash, the algorithm needs many extra comparisons, so Rabin-Karp can become slower.
 
-Mission 5. What are the two states of a person in your DP, and how do you get the answer for a person from its children? Why does a greedy "test the person with most links first" not always give the cheapest answer?
+Mission 5
+The two states are the minimum cost when a person is tested and when a person is not tested. If a person is not tested, their children must be tested; if they are tested, we can choose the cheaper state for each child. A greedy choice based only on the number of links may miss a cheaper combination of people in other parts of the tree.
 
 ## AI use
 
-The syllabus requires you to say which AI tools you used and for what. Write the tool (ChatGPT, Copilot, other) and what you asked it: explain an idea, find an error, review code. Write "none" if you did not use any. If you took code or text from a book or a website, give the source here.
+I used ChatGPT as a learning assistant to help me understand the algorithms, explain the assignment requirements, and review the implementation. I checked the code by running the provided tests and my program. I reviewed the algorithms and the code so that I can explain how they work.
 
 ## Timing (Mission 7)
 
 Milliseconds, average of 3 runs, from `java -cp out Bench`.
 
-| test | size | time |
-|---|---|---|
-| naive search | 20 000 / 40 000 / 80 000 | |
-| KMP | 20 000 / 40 000 / 80 000 | |
-| edit distance | 500 / 1000 / 2000 / 4000 | |
+| test          | size                      | time                                |
+|---------------|---------------------------|-------------------------------------|
+| naive search  | 20 000 / 40 000 / 80 000  | 51.8 ms / 98.2 ms / 196.9 ms        |
+| KMP           | 20 000 / 40 000 / 80 000  | 2.4 ms / 1.3 ms / 0.4 ms            |
+| edit distance | 500 / 1000 / 2000 / 4000  | 5.1 ms / 8.4 ms / 18.4 ms / 86.6 ms |
 
-What do the numbers say about how the time grows? When you double the size, by how much does each time grow? Two or three sentences.
-
+The naive search time almost doubles when the text size doubles (51.8 → 98.2 → 196.9 ms), which shows linear growth for this test. KMP times stay very small and do not increase consistently because of measurement variations, while edit distance generally grows faster: doubling the size increased the time by about 1.6×, 2.2×, and 4.7×.
 ## Complexity
 
 n is the length of the text (or of a strain), m the length of the pattern, k the length of the window, v the number of people. Fill in every algorithm you wrote.
 
-| algorithm | time | space | assumptions |
-|---|---|---|---|
-| Edit distance | | | |
-| LCS | | | |
-| Prefix function and KMP | | | |
-| Rabin-Karp (shared words) | | | |
-| Tree DP | | | |
+| algorithm                  | time              | space     | assumptions                                                                  |
+|----------------------------|-------------------|-----------|------------------------------------------------------------------------------|
+| Edit distance              | O(n × m)          | O(n × m)  | `n` and `m` are the lengths of the two strains                               |
+| LCS                        | O(n × m)          | O(n × m)  | `n` and `m` are the lengths of the two strains                               |
+| Prefix function and KMP    | O(n + m)          | O(m)      | `n` is the text length and `m` is the pattern length                         |
+| Rabin-Karp (shared words)  | O(n + m) average  | O(m)      | Assumes a good hash with few collisions; many collisions can make it slower  |
+| Tree DP                    | O(n)              | O(n)      | The input is a tree, so each person/node and edge is processed once          |
 
 ## Before you submit
 
