@@ -11,8 +11,23 @@ public class Marker {
      * Example: p = "ACGAC" gives [0, 0, 0, 1, 2]. The last number is the "Border length" line.
      */
     public static int[] prefixFunction(String p) {
-        // TODO Mission 3a
-        return new int[p.length()];
+        int[] pi = new int[p.length()];
+
+        for (int i = 1; i < p.length(); i++) {
+            int j = pi[i - 1];
+
+            while (j > 0 && p.charAt(i) != p.charAt(j)) {
+                j = pi[j - 1];
+            }
+
+            if (p.charAt(i) == p.charAt(j)) {
+                j++;
+            }
+
+            pi[i] = j;
+        }
+
+        return pi;
     }
 
     /**
